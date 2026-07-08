@@ -30,7 +30,7 @@ jobs:
           # Индекс 0 — это самая свежая версия. Удаляем начиная с индекса 1.
           for id in "${VERSION_IDS[@]:1}"; do
             echo "Удаляю старую версию контейнера с ID: $id..."
-            gh api --method DELETE /user/packages/container/amneziawg-dockerhub%2Famneziawg-scratch/versions/$id --silent || true
+            gh api --method DELETE /user/packages/container/amneziawg-dockerhub%2Famneziawg-alpine/versions/$id --silent || true
           done
           
           echo "Очистка успешно завершена!"
