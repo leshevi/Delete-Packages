@@ -10,27 +10,28 @@ jobs:
         env:
           # Обязательно используйте ваш PAT-токен с правами delete:packages
           GH_TOKEN: ${{ secrets.CR_PAT }} 
+          PACKAGE_NAME: 'amneziawg-dockerhub/amneziawg-scratch'
         run: |
-          # 1. Получаем список всех версий пакета в формате JSON, сортируем по дате создания
-          # Замените 'amneziawg-dockerhub/amneziawg-scratch' на точное имя, если оно отличается
-          VERSIONS=$(gh api /user/packages/container/amneziawg-dockerhub%2Famneziawg-alpine/versions --paginate --jq '.[] | .id')
+          # Автоматически заменяем '/' на '%2F' для корректного запроса к API GitHub
+          ENCODED_NAME="${PACKAGE_NAME////%2F}"
           
-          # Превращаем в массив
+          echo "Работаем с пакетом: $PACKAGE_NAME (API путь: $ENCODED_NAME)"
+          
+          # Получаем список всех версий пакета
+          VERSIONS=$(gh api "/user/packages/container/$ENCODED_NAME/versions" --paginate --jq '.[] | .id')
+          
           VERSION_IDS=($VERSIONS)
-          
           echo "Найдено всего версий: ${#VERSION_IDS[@]}"
           
-          # Если версий меньше или равна 1, ничего не делаем
           if [ ${#VERSION_IDS[@]} -le 1 ]; then
             echo "Удалять нечего, осталась 1 версия или меньше."
             exit 0
           fi
           
-          # 2. Пропускаем первую (самую новую) версию и удаляем все остальные в цикле
-          # Индекс 0 — это самая свежая версия. Удаляем начиная с индекса 1.
+          # Удаляем все версии, кроме первой (самой новой)
           for id in "${VERSION_IDS[@]:1}"; do
-            echo "Удаляю старую версию контейнера с ID: $id..."
-            gh api --method DELETE /user/packages/container/amneziawg-dockerhub%2Famneziawg-alpine/versions/$id --silent || true
+            echo "Удаляю версию контейнера с ID: $id..."
+            gh api --method DELETE "/user/packages/container/$ENCODED_NAME/versions/$id" --silent || true
           done
           
           echo "Очистка успешно завершена!"
