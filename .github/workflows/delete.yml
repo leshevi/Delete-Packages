@@ -13,7 +13,7 @@ jobs:
         run: |
           # 1. Получаем список всех версий пакета в формате JSON, сортируем по дате создания
           # Замените 'amneziawg-dockerhub/amneziawg-scratch' на точное имя, если оно отличается
-          VERSIONS=$(gh api /user/packages/container/amneziawg-dockerhub%2Famneziawg-scratch/versions --paginate --jq '.[] | .id')
+          VERSIONS=$(gh api /user/packages/container/amneziawg-dockerhub%2Famneziawg-alpine/versions --paginate --jq '.[] | .id')
           
           # Превращаем в массив
           VERSION_IDS=($VERSIONS)
