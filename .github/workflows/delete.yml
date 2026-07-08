@@ -12,5 +12,5 @@ jobs:
           package-name: 'amneziawg-dockerhub/amneziawg-scratch'
           package-type: 'container' # Замените на container, maven, nuget, rubygems
           owner: 'leshevi'
-          min-versions-to-keep: 5
+          min-versions-to-keep: 1
           token: ${{ secrets.CR_PAT }}
