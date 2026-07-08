@@ -7,11 +7,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete deployment packages
-        uses: actions/delete-package-versions@v5
-        with:
-          package-name: 'amneziawg-dockerhub/amneziawg-alpine'
-          package-type: 'container' # Замените на container, maven, nuget, rubygems
-          owner: 'leshevi'
-          min-versions-to-keep: 1
-          delete-only-untagged-versions: 'true'
-          token: ${{ secrets.CR_PAT }}
+        env:
+          # Обязательно используйте ваш PAT-токен с правами delete:packages
+          GH_TOKEN: ${{ secrets.CR_PAT }} 
+        run: |
+          # 1. Получаем список всех версий пакета в формате JSON, сортируем по дате создания
+          # Замените 'amneziawg-dockerhub/amneziawg-scratch' на точное имя, если оно отличается
+          VERSIONS=$(gh api /user/packages/container/amneziawg-dockerhub%2Famneziawg-scratch/versions --paginate --jq '.[] | .id')
+          
+          # Превращаем в массив
+          VERSION_IDS=($VERSIONS)
+          
+          echo "Найдено всего версий: ${#VERSION_IDS[@]}"
+          
+          # Если версий меньше или равна 1, ничего не делаем
+          if [ ${#VERSION_IDS[@]} -le 1 ]; then
+            echo "Удалять нечего, осталась 1 версия или меньше."
+            exit 0
+          fi
+          
+          # 2. Пропускаем первую (самую новую) версию и удаляем все остальные в цикле
+          # Индекс 0 — это самая свежая версия. Удаляем начиная с индекса 1.
+          for id in "${VERSION_IDS[@]:1}"; do
+            echo "Удаляю старую версию контейнера с ID: $id..."
+            gh api --method DELETE /user/packages/container/amneziawg-dockerhub%2Famneziawg-scratch/versions/$id --silent || true
+          done
+          
+          echo "Очистка успешно завершена!"
