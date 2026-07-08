@@ -13,4 +13,5 @@ jobs:
           package-type: 'container' # Замените на container, maven, nuget, rubygems
           owner: 'leshevi'
           min-versions-to-keep: 1
+          delete-only-untagged-versions: 'true'
           token: ${{ secrets.CR_PAT }}
