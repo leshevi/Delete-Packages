@@ -10,5 +10,7 @@ jobs:
         uses: actions/delete-package-versions@v5
         with:
           package-name: 'amneziawg-dockerhub/amneziawg-scratch'
-          package-type: 'npm' # Замените на container, maven, nuget, rubygems
+          package-type: 'container' # Замените на container, maven, nuget, rubygems
+          owner: 'leshevi'
           min-versions-to-keep: 5
+          token: ${{ secrets.CR_PAT }}
