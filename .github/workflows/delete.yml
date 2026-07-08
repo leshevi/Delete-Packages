@@ -9,7 +9,7 @@ jobs:
       - name: Delete deployment packages
         uses: actions/delete-package-versions@v5
         with:
-          package-name: 'amneziawg-dockerhub/amneziawg-scratch'
+          package-name: 'amneziawg-dockerhub/amneziawg-alpine'
           package-type: 'container' # Замените на container, maven, nuget, rubygems
           owner: 'leshevi'
           min-versions-to-keep: 1
