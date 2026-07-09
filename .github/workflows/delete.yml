@@ -10,7 +10,7 @@ jobs:
         env:
           # Обязательно используйте ваш PAT-токен с правами delete:packages
           GH_TOKEN: ${{ secrets.CR_PAT }} 
-          PACKAGE_NAME: 'amneziawg-dockerhub/amneziawg-scratch'
+          PACKAGE_NAME: 'amneziawg-dockerhub/amneziawg-alpine'
         run: |
           # Автоматически заменяем '/' на '%2F' для корректного запроса к API GitHub
           ENCODED_NAME="${PACKAGE_NAME////%2F}"
